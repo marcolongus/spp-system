@@ -36,7 +36,7 @@ using namespace std;
 int main(void){	
 	/*DEFINICIÓN DE ARCHIVOS DE SALIDA DEL PROGRAMA*/
 	ofstream FinalState ("data/evolution.txt");
-	ofstream epidemic   ("data/epidemia.txt" ); //Estado de la epidemia en cada instante modulo m.
+	ofstream epidemic   ("data/epidemia.txt" );		//Estado de la epidemia en cada instante modulo m.
 	ofstream anim       ("data/animacion.txt");
 	ofstream metrica    ("data/metrica.txt", ios_base::app) ; 
 	
@@ -46,14 +46,15 @@ int main(void){
 
 	/*SIMULACION*/
 	gen.seed(seed);  
-	for (size_t n_simulaciones = 0; n_simulaciones < 1; n_simulaciones++){
+	for (size_t n_simulaciones = 0; n_simulaciones < 1; n_simulaciones++)
+	{
 		print_header(n_simulaciones);		
 		
 		/*DECLARACIÓN DE VARIABLES*/
 		vector<particle> system, 
 						 system_new;
-		vector<bool>     inter;        //Flag de interacción.
-		vector<size_t>   state_vector; //En cada lugar contiene la población de cada estado.
+		vector<bool>     inter;        	//Flag de interacción.
+		vector<size_t>   state_vector;	//En cada lugar contiene la población de cada estado.
 		inter.resize(N,false);
 		state_vector.resize(spin,0);
 
@@ -71,28 +72,28 @@ int main(void){
 		/*EVOLUCIÓN DEL SISTEMA*/		
 		int TimeStep = 0;
 		KIND i_max = 0, t_max = 0;
-		while (state_vector[1] > 0){
+		while (state_vector[1] > 0)
+		{
 			CHECK (TimeStep, (int)1e02) print_epidemic_tofile(epidemic, state_vector, TimeStep);
 			CHECK (TimeStep, (int)2e04) printf("Time: %0.f\n", TIME(TimeStep, delta_time));
 			TimeStep ++;
 			update_system(system, system_new, state_vector, grid, inter, TimeStep, anim);
-			if (i_max < state_vector[1]) {
+			if (i_max < state_vector[1])
+			{
 				i_max = state_vector[1]; 
 				t_max = TIME(TimeStep, delta_time);
 			}
-		}
+		} //WHILE
 
 		updates += (float)TimeStep;
 
 		/*ESCRITURA DE RESULTADOS*/
-		print_finalstate_tofile(FinalState, state_vector, i_max, t_max, TimeStep); //redefinir a tofile
+		print_finalstate_tofile(FinalState, state_vector, i_max, t_max, TimeStep);	//redefinir a tofile
 		print_result_header();				
 		print_state(state_vector);
 		cout << endl;
-	}//for simul
+	}  //FOR SIMUL
 		
-
-
 	int   stop_s       = clock();
 	float cps          = (float)CLOCKS_PER_SEC;
 	float time_elapsed = (float)(clock() - start_s)/cps;
