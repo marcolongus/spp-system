@@ -1,5 +1,4 @@
 #pragma once
-
 #define KIND float  
 
 //Parametros principales:
@@ -12,7 +11,7 @@ const KIND delta_time      = 0.05;
 const KIND active_velocity = 0.1; //Velocidad de las partículas cuando no interactúan.
 
 //0 -> dist. exponencial, 1 -> dist. power law. Cualquier otro dist. uniforme.
-const int velocity_distribution = -1;
+const int velocity_distribution = 0;
 
 //Condición inicial SIR
 const KIND   p_init  = 0.1, //Infectadas iniciales.

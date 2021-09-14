@@ -38,7 +38,6 @@ class particle{
 
 /***************************************************************************************/
 /***************************************************************************************/
-
 /* Constructor de partícula genérica*/
 particle::particle(){
 	velocity = 0;
@@ -54,7 +53,6 @@ particle::particle(KIND x1, KIND y1, KIND vel, KIND ang){
 	x        = x1;
 	y        = y1;
 }
-
 
 /***************************************************************************************/
 
@@ -186,9 +184,7 @@ bool interact(particle A, particle B){
 
 /*INTERACTION FUNCTIONS*/
 /* Evolution time step function of the particle */
-
 /***************************************************************************************/
-
 particle evolution(vector<particle> &system, vector<int> &index, bool inter){
 	particle Agent = system[index[0]];
 	/* DINÁMICA ESPACIAL DEL SISTEMA*/
@@ -232,13 +228,9 @@ particle evolution(vector<particle> &system, vector<int> &index, bool inter){
 			}
 		}
 	}//for
-    if (Agent.is_refractary() && (dis(gen) < p_recfractary) ) Agent.set_healthy(); //SIRS
+    // if (Agent.is_refractary() && (dis(gen) < p_recfractary) ) Agent.set_healthy(); //SIRS
     if (Agent.is_infected() && flag && (dis(gen) < p_infection) ) Agent.set_refractary();
     return Agent;
 }
 /***************************************************************************************/
-void print_state(vector<size_t> state_vector){
-		cout << "Healthy   : " << state_vector[0] << endl;
-		cout << "Infected  : " << state_vector[1] << endl;
-		cout << "Refractary: " << state_vector[2] << endl << endl;
-}
+

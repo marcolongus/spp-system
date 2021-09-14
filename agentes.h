@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 void
 init_system( vector<particle>            &system       ,  
 			 vector<size_t>              &state_vector , 
@@ -17,7 +16,7 @@ init_system( vector<particle>            &system       ,
 			Agent = create_particle();
 			int i_index = floor(Agent.x),
 				j_index = floor(Agent.y);
-				//Si interactúa con otra partícula cambiamos la condición a no aceptada.
+			//Si interactúa con otra partícula cambiamos la condición a no aceptada.
 			forn(l,-2,3){
 				forn(m,-2,3){
 					int i = b_condition(i_index + l),
@@ -41,9 +40,9 @@ void
 update_system(  vector<particle>            &system      , 
 				vector<particle>            &system_new  ,
 				vector<size_t>              &state_vector, 
-				vector<vector<set<size_t>>> &grid         ,
+				vector<vector<set<size_t>>> &grid        ,
 				vector<bool>                &inter       ,
-				int                         &TimeStep     ,
+				int                         &TimeStep    ,
 				ofstream                    &anim          )
 {
 	size_t healthy=0, infected=0, refract=0;
@@ -80,7 +79,7 @@ update_system(  vector<particle>            &system      ,
 					break;
 			}
 		}//for p
-		state_vector = {healthy,infected,refract};
+		state_vector = {healthy, infected, refract};
 		//Animacion:
 		if (animation and TimeStep % anim_step == 0){
 			for(size_t p=0; p < N; p++){
@@ -91,7 +90,6 @@ update_system(  vector<particle>            &system      ,
 			}
 		}//if animacion
 		/*Estabilzamos el set*/
-
 		for(size_t p=0; p<N; p++){
 			int i_new = floor(system_new[p].x),
 				j_new = floor(system_new[p].y);
@@ -108,14 +106,22 @@ update_system(  vector<particle>            &system      ,
 
 
 
-//Print functiones
 
+//Print functiones
 void print_header(int n_simulaciones)
 {
 	cout << "--------------------------------------------------------"   << endl;
 	cout << "Simulacion: " << n_simulaciones << endl;
 	cout << "--------------------------------------------------------"   << endl;
 	cout << endl;
+}
+
+void print_result_header(void)
+{
+	cout << endl;
+	cout << "--------------------" << endl;
+	cout << "Experimento data:"    << endl;
+	cout << "--------------------" << endl;
 }
 
 
@@ -126,9 +132,10 @@ void print_mem_info(void)
 	cout << "Memoria del sistema [Bytes]     : " << system_memory                 << " Bytes" << endl;
 	cout << "Memoria del sistema [Megasbytes]: " << (float)system_memory/1000000. << " Mb"    << endl;  
 	cout << "Memoria de una particula 		 : " << (float)system_memory/(float)N << " Bytes" << endl;
-	cout << "Memoria del espacio      		 : " <<  space_memory/1e06f     	  << " Mb" << endl;
+	cout << "Memoria del espacio      		 : " <<  space_memory/1e06f     	  << " Mb"    << endl;
 	cout << "Memoria de un grid        		 : " <<  48                           << " Bytes" << endl;  
 }
+
 
 void print_epidemic_tofile(ofstream &file, vector<size_t> &state_vector, int &TimeStep)
 {
@@ -136,4 +143,24 @@ void print_epidemic_tofile(ofstream &file, vector<size_t> &state_vector, int &Ti
 	file << state_vector[1] << " ";
 	file << state_vector[2] << " ";
 	file << delta_time*(double)TimeStep << endl;
+}
+
+
+void print_state(vector<size_t> state_vector){
+		cout << "Healthy   : " << state_vector[0] << endl;
+		cout << "Infected  : " << state_vector[1] << endl;
+		cout << "Refractary: " << state_vector[2] << endl << endl;
+}
+
+
+void print_finalstate_tofile(ofstream       &file, 
+							 vector<size_t> &state_vector, 
+							 KIND 			&i_max, 
+							 KIND 			&t_max, 
+							 int 			&TimeStep)
+{
+	file << state_vector[2] << " ";
+	file << delta_time*(KIND)TimeStep << " ";
+	file << i_max << " ";
+	file << t_max << endl;
 }
