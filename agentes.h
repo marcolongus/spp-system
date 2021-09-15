@@ -1,4 +1,4 @@
-#include "classparticle.h"
+#include "./classparticle.h"
 #define forn(i,a,b) for(int i=a; i<b; i++)
 
 using namespace std;
@@ -8,7 +8,7 @@ init_system( vector<particle>            &system       ,
 			 vector<size_t>              &state_vector , 
 			 vector<vector<set<size_t>>> &grid            )
 {
-	for(int p = 0; p < N; p++){
+	for(int p = 0; p < N; p++) {
 		particle Agent;
 		bool accepted = false;
 		while(!accepted){
@@ -16,7 +16,7 @@ init_system( vector<particle>            &system       ,
 			Agent = create_particle();
 			int i_index = floor(Agent.x),
 				j_index = floor(Agent.y);
-			//Si interactúa con otra partícula cambiamos la condición a no aceptada.
+			// Si interactúa con otra partícula cambiamos la condición a no aceptada.
 			forn(l,-2,3){
 				forn(m,-2,3){
 					int i = b_condition(i_index + l),
@@ -24,19 +24,18 @@ init_system( vector<particle>            &system       ,
 					if (!grid[i][j].empty()){
 						for (auto element: grid[i][j]){
 							if (interact(Agent,system[element])) accepted = false;
-						}//for auto
-					}//if not empty
-				}//for m
-			}//for l
+						}  // FOR AUTO
+					}  // IF NOT EMPTY
+				}  // FOR M
+			}  // FOR L
 			if (accepted) grid[i_index][j_index].insert(p);
-		}//while
+		}  // WHILE
 		system.push_back(Agent);
 		state_vector[Agent.get_state()]++;
-	}//for N	
+	}  // FOR N	
 }
 
-
-void 
+void
 update_system(  vector<particle>            &system      , 
 				vector<particle>            &system_new  ,
 				vector<size_t>              &state_vector, 
@@ -48,23 +47,23 @@ update_system(  vector<particle>            &system      ,
 	size_t healthy=0, infected=0, refract=0;
 	state_vector = {0UL,0UL,0UL};
 	#pragma omp parallel for schedule(guided) reduction(+:healthy,infected,refract) num_threads(12)
-	for (size_t p=0; p<N; p++){
+	for (size_t p=0; p<N; p++) {
 			vector<int> index;
 			index.push_back(p);
 			inter[p] = false;
-			/*chequeamos interacciones*/
+			/* Chequeamos interacciones*/
 			forn(l,-2,3) forn(m,-2,3){
 				size_t i_index = b_condition(floor(system[p].x)+l),
 					   j_index = b_condition(floor(system[p].y)+m);
-				if(!grid[i_index][j_index].empty()){
-					for(auto element: grid[i_index][j_index]){
-						if (element !=p && interact(system[p],system[element])){
+				if(!grid[i_index][j_index].empty()) {
+					for(auto element: grid[i_index][j_index]) {
+						if (element != p && interact(system[p],system[element])) {
 							inter[p] = true;
 							index.push_back(element);
 						}
-					}//for
-				}//if not empty
-			} //for m, l
+					}  // FOR AUTO
+				} // IF NOT EMTY
+			}  // FOR M,L
 			/*fin de chequeo de interacciones*/
 			system_new[p] = evolution(system, index, inter[p]);
 			switch(system_new[p].get_state()){
@@ -78,7 +77,7 @@ update_system(  vector<particle>            &system      ,
 				refract++;
 					break;
 			}
-		}//for p
+		}  // FOR P
 		state_vector = {healthy, infected, refract};
 		//Animacion:
 		if (animation and TimeStep % anim_step == 0){
@@ -88,7 +87,7 @@ update_system(  vector<particle>            &system      ,
 				anim << TimeStep*delta_time       << " ";
 				anim << system_new[p].get_state() << endl;
 			}
-		}//if animacion
+		}  // IF ANIMATION
 		/*Estabilzamos el set*/
 		for(size_t p=0; p<N; p++){
 			int i_new = floor(system_new[p].x),
@@ -99,12 +98,10 @@ update_system(  vector<particle>            &system      ,
 			if (grid[i_new][j_new].find(p) == grid[i_new][j_new].end()){
 				grid[i_old][j_old].erase(p);
 				grid[i_new][j_new].insert(p);
-			}//if
-		}//cirra el for p set.
+			}  // IF
+		} // CIERRA FOR P SET.
 		system = system_new;
 }
-
-
 
 
 //Print functiones
@@ -127,8 +124,8 @@ void print_result_header(void)
 
 void print_mem_info(void)
 {
-	int   system_memory  = 2*(5*sizeof(KIND)*N);
-	float space_memory   = 48.f*L*L;
+	int   system_memory  = 2 * (5 * sizeof(KIND) * N);
+	float space_memory   = 48.f * L * L;
 	cout << "Memoria del sistema [Bytes]     : " << system_memory                 << " Bytes" << endl;
 	cout << "Memoria del sistema [Megasbytes]: " << (float)system_memory/1000000. << " Mb"    << endl;  
 	cout << "Memoria de una particula 		 : " << (float)system_memory/(float)N << " Bytes" << endl;
@@ -159,8 +156,8 @@ void print_finalstate_tofile(ofstream       &file,
 							 KIND 			&t_max, 
 							 int 			&TimeStep)
 {
-	file << state_vector[2] << " ";
+	file << state_vector[2]           << " ";
 	file << delta_time*(KIND)TimeStep << " ";
-	file << i_max << " ";
-	file << t_max << endl;
+	file << i_max 					  << " ";
+	file << t_max					  << endl;
 }
